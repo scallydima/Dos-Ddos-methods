@@ -10,4 +10,5 @@ cnc dos.exe powerproof: (by single ip/bot)
 <img width="1490" height="554" alt="image" src="https://github.com/user-attachments/assets/cc7edb3e-f8bf-4ff6-95b3-a79fb455bc77" />
 
  # CNC/MENU
- <img width="719" height="279" alt="image" src="https://github.com/user-attachments/assets/265ecf72-36d6-4af4-bd1e-fc7d71d400d7" />
+<img width="384" height="254" alt="image" src="https://github.com/user-attachments/assets/8a13541e-17f2-4fd5-932c-58a1547776ed" />
+
